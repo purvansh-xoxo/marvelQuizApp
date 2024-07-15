@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marvel Comics Quiz</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Ensure this path is correct -->
+</head>
+<body>
+    <div class="container">
+        <h1>Marvel Comics Quiz</h1>
+
+        <div id="quiz-section" class="section">
+            <h2>Quiz</h2>
+            <div id="quiz-container"></div>
+            <button onclick="submitQuiz()">Submit Quiz</button>
+        </div>
+
+        <div id="review-section" class="section" style="display:none;">
+            <h2>Review</h2>
+            <div id="review-container"></div>
+            <button onclick="displayResult()">Display Result</button>
+        </div>
+
+        <div id="result-section" class="section" style="display:none;">
+            <h2>Result</h2>
+            <div id="result-container" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Sample JSON data for questions
+        const quizData = [
+            {
+                question: "What is the real name of Iron Man?",
+                options: ["Steve Rogers", "Bruce Banner", "Tony Stark", "Peter Parker"],
+                answer: 2
+            },
+            {
+                question: "Which Infinity Stone does Vision have on his forehead?",
+                options: ["Mind Stone", "Time Stone", "Power Stone", "Reality Stone"],
+                answer: 0
+            },
+            {
+                question: "Who is the director of S.H.I.E.L.D.?",
+                options: ["Nick Fury", "Phil Coulson", "Maria Hill", "Alexander Pierce"],
+                answer: 0
+            },
+            {
+                question: "What is the name of Thor’s hammer?",
+                options: ["Stormbreaker", "Mjolnir", "Gungnir", "Jarnbjorn"],
+                answer: 1
+            },
+            {
+                question: "Which superhero is known as the 'Merc with a Mouth'?",
+                options: ["Deadpool", "Wolverine", "Spider-Man", "Hawkeye"],
+                answer: 0
+            }
+        ];
+
+        // Function to load the quiz
+        function loadQuiz() {
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.innerHTML = '';
+
+            quizData.forEach((item, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <p>${item.question}</p>
+                    ${item.options.map((option, i) => `
+                        <label>
+                            <input type="radio" name="question${index}" value="${i}">
+                            ${option}
+                        </label>
+                    `).join('<br>')}
+                `;
+                quizContainer.appendChild(questionDiv);
+            });
+        }
+
+        // Function to submit the quiz
+        function submitQuiz() {
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.innerHTML = '';
+
+            quizData.forEach((item, index) => {
+                const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                const selectedValue = selectedOption ? parseInt(selectedOption.value) : -1;
+
+                const reviewDiv = document.createElement('div');
+                reviewDiv.className = 'question';
+                reviewDiv.innerHTML = `
+                    <p>${item.question}</p>
+                    <p>Your answer: ${selectedValue !== -1 ? item.options[selectedValue] : 'No answer selected'}</p>
+                    <p>Correct answer: ${item.options[item.answer]}</p>
+                `;
+                reviewContainer.appendChild(reviewDiv);
+            });
+
+            document.getElementById('quiz-section').style.display = 'none';
+            document.getElementById('review-section').style.display = 'block';
+        }
+
+        // Function to display the result
+        function displayResult() {
+            let correctAnswers = 0;
+            quizData.forEach((item, index) => {
+                const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                const selectedValue = selectedOption ? parseInt(selectedOption.value) : -1;
+                if (selectedValue === item.answer) {
+                    correctAnswers++;
+                }
+            });
+
+            const resultContainer = document.getElementById('result-container');
+            resultContainer.innerHTML = `You got ${correctAnswers} out of ${quizData.length} correct!`;
+
+            document.getElementById('review-section').style.display = 'none';
+            document.getElementById('result-section').style.display = 'block';
+        }
+
+        // Initialize the quiz on page load
+        window.onload = loadQuiz;
+    </script>
+</body>
+</html>
